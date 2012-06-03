@@ -1,0 +1,130 @@
+name: The Hunger Games
+author: John Espenhahn
+website: free-javagames.co.cc
+main: co.cc.free.dash.javagames.theone15247.TheHungerGames.HungerGames
+version: 1.3.4
+
+commands:
+   games-volunteer:
+      description: Volunteer as tribute.
+      usage: Syntax error! Use /games-volunteer
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-tribute:
+      description: Choose a player as a tribute.
+      usage: Syntax error! Use /games-tribute [name]
+      aliases: [games-trib]
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-spec:
+      description: Watch the Hunger Games.
+      usage: Syntax error! Use /games-spectate
+      aliases: [games-spectate]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-start:
+      description: Start The Games.
+      usage: Syntax error! Use /games-start
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-prepare:
+      description: Prepare the players to start The Game.
+      usage: Syntax error! Use /games-prepare
+      aliases: [games-prep]
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-gamemaker:
+      description: Become a Gamemaker of the Hunger Game.
+      usage: Syntax error! Use /games-gamemaker [name]
+      aliases: [games-gm]
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-ungamemaker:
+      description: Removes the Gamemaker permissions.
+      usage: Syntax error! Use /games-ungamemaker [name]
+      aliases: [games-ungm]
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-accept:
+      description: Start accepting Tributes for The Games.
+      usage: Syntax error! Use /games-accept
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-end:
+      description: Gamemakers can end The Games early.
+      usage: Syntax error! Use /games-end
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-tpSpawn:
+      description: Teleports a player to the spawn.
+      usage: Syntax error! Use /games-tpspawn [name]
+      permission: HungerGames.admin
+      permissions-message: You don't have OP permissions
+   games-listTrib:
+      description: Lists all tributes.
+      usage: Syntax error! Use /games-listTrib
+      aliases: [games-listtributes]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-listSpec:
+      description: Lists all spectators.
+      usage: Syntax error! Use /games-listSpec
+      aliases: [games-listspectators]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-listGm:
+      description: Lists all gamemakers.
+      usage: Syntax error! Use /games-listGm
+      aliases: [games-listgamemakers]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-unTrib:
+      description: Removes a tribute.
+      usage: Syntax error! Use /games-unTrib [name]
+      aliases: [games-untribute]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-unSpec:
+      description: Removes a spectator.
+      usage: Syntax error! Use /games-unSpec [name]
+      aliases: [games-unspectate]
+      permission: HungerGames.default
+      permissions-message: You don't have basic permissions
+   games-notribute:
+       description: Won't be randomly chosen
+       usage: Syntax error! Use /games-notribute
+       aliases: [games-notrib, games-no]
+       permission: HungerGames.default
+       permissions-message: You don't have basic permissions
+   games-dotribute:
+       description: You can be randomly chosen
+       usage: Syntax error! Use /games-dotribute
+       aliases: [games-dotrib, games-do]
+       permission: HungerGames.default
+       permissions-message: You don't have basic permissions
+   games-state:
+       description: Tell the current state of The Games
+       usage: Syntax error! Use /games-state
+       permissions: HungerGames.default
+       permissions-message: You don't have basic permissions
+   games-storm:
+       description: Toggle storm on/off
+       usage: Syntax error! Use /games-storm
+       permissions: HungerGames.admin
+       permissions-message: You don't have OP permissions
+      
+permissions:
+    HungerGames.default:
+        description: Permissions to basic Hunger Games commands
+        default: true
+    HungerGames.admin:
+        description: Permissions to all Hunger Games commands
+        default: op
+        children:
+           HungerGames.default: true
+    HungerGames.gamemaker:
+        description: Gamemaker permissions
+        default: false
+        children:
+           HungerGames.default: true
+           HugnerGames.admin: true

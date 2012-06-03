@@ -1,0 +1,22 @@
+loadOnce:
+  worldName: default
+  centerX: 0
+  centerZ: 0
+  radius: 150
+  depth: 15
+  updating: false
+  remove: false
+  spawnInArena: false
+refresh:
+  tribHearDist: 25
+  protectGamesTNT: false
+  items: 10
+  unOP: false
+  compassPoint: true
+  autorun:
+    doAutorun: false
+    betweenGamesSec: 10
+    startingTribs: 2
+    randomPickTribs: 10
+    tribWaitSec: 10
+    respawnItemsTime: 300

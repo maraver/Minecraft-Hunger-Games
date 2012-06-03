@@ -1,6 +1,5 @@
-------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
 The Hunger Games Plugin v 1.4 for bukkit servers
-------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
 
 IMPORTANT
@@ -8,18 +7,18 @@ IMPORTANT
 For the time being, once you have configured radius, centerX, and centerZ 
 and created the arena it is important that the do NOT change
 
-
+--------------------------------------------------------------------------------------------------------------
 SETTING UP
 
 Setting up the plugin
  1. Download Bukkit and configure the server like normal
- 2. If you haven�t already start the server at least once before installing the plugin
+ 2. If you haven't already start the server at least once before installing the plugin
  3. Safely stop the server to save the world (using the stop command)
  4. Drag and drop the hungergames.jar file into the plugins folder of your server like normal
- 5. Restart the server. You will get a message saying �A starting location hasn�t been set!�
+ 5. Restart the server. You will get a message saying "A starting location hasn't been set!"
  6. Connect to the server and find the point you want to be the start and center of the arena using f3
- 7. Open the config.yml in the new �The Hunger Games� that has been created (notepad may not work, try notepad++)
- 8. In the file change the diameter of the arena, the amount of items randomly placed need the cornucopia, and the centerX and Z to the      ones you choose
+ 7. Open the config.yml in the new 'The Hunger Games' that has been created (notepad may not work, try notepad++)
+ 8. In the file change the diameter of the arena, the amount of items randomly placed need the cornucopia, and the centerX and Z to the ones you choose
  9. Restart the server, it should work. You may get and error just move the centerX and Z accoring to what it says
 
 Starting your first Games
@@ -30,18 +29,18 @@ Starting your first Games
  5. After you have all the tributes use '/games-prepare'
  6. Count down or something the use '/games-start'
 
-
+--------------------------------------------------------------------------------------------------------------
 UPDATING
 
-    ------- special notes --------
+   ------- special notes --------
     
 To 1.3.X
  * You must have 1.3 before you can update to 1.3.X
  *  Ignore the warning that look like this:  Invalid type for tribute's HashMap in bin
 
-    ------ general updating -------
+   ------ general updating -------
       
- *** You must always follow this first step when updating ***
+ ** You must always follow this first step when updating **
  1. Untribute/spectate/GM everyone and stop the games
           * use /games-end to clear all tribute and spectators
           * you have to manually remove all GM (/games-ungamemaker <name>)
@@ -64,7 +63,7 @@ Major (x.1.x)(ex: 1.2.1 to 1.3)
  8. Find a new location for the arena and configure 'config.yml' to your liking
  9. Restart the server one more time
 
-
+--------------------------------------------------------------------------------------------------------------
 CHANGELOG
 
 v 1.3.4

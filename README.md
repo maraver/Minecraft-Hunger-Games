@@ -1,17 +1,15 @@
 --------------------------------------------------------------------------------------------------------------
 <h2>The Hunger Games Plugin v 1.4 for bukkit servers</h2>
 
---------------------------------------------------------------------------------------------------------------
-
 <h3>IMPORTANT</h3>
 
 For the time being, once you have configured radius, centerX, and centerZ 
 and created the arena it is important that the do NOT change
 
 --------------------------------------------------------------------------------------------------------------
-SETTING UP
+<h3>SETTING UP</h3>
 
-Setting up the plugin
+<h4>Setting up the plugin</h4>
  1. Download Bukkit and configure the server like normal
  2. If you haven't already start the server at least once before installing the plugin
  3. Safely stop the server to save the world (using the stop command)
@@ -22,7 +20,7 @@ Setting up the plugin
  8. In the file change the diameter of the arena, the amount of items randomly placed need the cornucopia, and the centerX and Z to the ones you choose
  9. Restart the server, it should work. You may get and error just move the centerX and Z accoring to what it says
 
-Starting your first Games
+<h4>Starting your first Games</h4>
  1. Make yourself and anyone you want to manage the game an OP (op <name>)
  2. If you want to make changes to the arena use '/games-gamemaster'
  3. Use '/games-accept' to begin accepting tributes
@@ -31,25 +29,25 @@ Starting your first Games
  6. Count down or something the use '/games-start'
 
 --------------------------------------------------------------------------------------------------------------
-<b>UPDATING</b>
+<h3>UPDATING</h3>
 
-   ------- special notes --------
+<h4>------- special notes --------</h4>
     
 To 1.3.X
  * You must have 1.3 before you can update to 1.3.X
  *  Ignore the warning that look like this:  Invalid type for tribute's HashMap in bin
 
-   ------ general updating -------
+<h4>------ general updating -------</h4>
       
- ** You must always follow this first step when updating **
+ * You must always follow this first step when updating *
  1. Untribute/spectate/GM everyone and stop the games
           * use /games-end to clear all tribute and spectators
           * you have to manually remove all GM (/games-ungamemaker <name>)
 
-Minor (x.x.1)(ex: 1.3 to 1.3.1)
+<h5>Minor (x.x.1)(ex: 1.3 to 1.3.1)</h5>
  2. Replace your current version of 'minecraftgames.jar' with the new one. Change nothing else
 
-Major (x.1.x)(ex: 1.2.1 to 1.3)
+<h5>Major (x.1.x)(ex: 1.2.1 to 1.3)</h5>
  2. Make a backup of 'config.yml' so you can find the centerX, centerZ, and radius from before the update
  3. Delete all Hunger Games files
  4. Drag and drop the new 'minecraftgames.jar' file
@@ -65,12 +63,12 @@ Major (x.1.x)(ex: 1.2.1 to 1.3)
  9. Restart the server one more time
 
 --------------------------------------------------------------------------------------------------------------
-CHANGELOG
+<h3>CHANGELOG</h3>
 
-v 1.3.4
+<h4>v 1.3.4</h4>
  * Bug fixes
 
-v 1.3.3
+<h4>v 1.3.3</h4>
  * Inventory saving
  * Revamped arena restore
  * Fixed day at start
@@ -81,14 +79,14 @@ v 1.3.3
            access to all HG commands without being OP
  * Small bug fixes
 
-v 1.3.2
+<h4>v 1.3.2</h4>
  * Multiverse support
  * If autorun is on items respawn at a customizable interval
  * Small improvements to arena restore (again...)
  * Fixed autorun
  * Bug fixes
 
-v 1.3.1
+<h4>v 1.3.1</h4>
  * Custom random items
  * Improved arena restore (again)
  * Fixed multiple tributes in one room (maybe, again)
@@ -103,7 +101,7 @@ v 1.3.1
  * Fixed not being able to become a GM
  * Bug fixes
 
-v 1.3 beta
+<h4>v 1.3 beta</h4>
  * Arena automation
  * Fixed arena restore (I think :P)
  * Updated the item system
@@ -133,18 +131,18 @@ v 1.3 beta
  * bug fixes
  * some other stuff I can't remember
 
-v 1.2.1
+<h4>v 1.2.1</h4>
  * Remove tribute armour
  * Updated random items
  * New item display system
  * Remove dropped items from previous games
  * Fixed minor teleporting bug
 
-v 1.2
+<h4>v 1.2</h4>
  * Changed gamemasters to gamemakers
  * Fixed spectators not being able to give items more than once
  * Tributes can only hear other tributes and spectators and only if they are near by
  * Configure distance that tributes can be to hear
 
-v 1.1
+<h4>v 1.1</h4>
  * Initial public release

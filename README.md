@@ -2,12 +2,14 @@
 The Hunger Games Plugin v 1.4 for bukkit servers
 ------------------------------------------------------
 
----------------IMPORTANT---------------
+
+IMPORTANT
 
 For the time being, once you have configured radius, centerX, and centerZ 
 and created the arena it is important that the do NOT change
 
--------------- SETTING UP --------------
+
+SETTING UP
 
 Setting up the plugin
  1. Download Bukkit and configure the server like normal
@@ -28,7 +30,8 @@ Starting your first Games
  5. After you have all the tributes use '/games-prepare'
  6. Count down or something the use '/games-start'
 
-------------------- UPDATING --------------------
+
+UPDATING
 
     ------- special notes --------
     
@@ -36,11 +39,8 @@ To 1.3.X
  * You must have 1.3 before you can update to 1.3.X
  *  Ignore the warning that look like this:  Invalid type for tribute's HashMap in bin
 
-----------------------------------------------------
-
-      ------ general updating -------
+    ------ general updating -------
       
-
  *** You must always follow this first step when updating ***
  1. Untribute/spectate/GM everyone and stop the games
           * use /games-end to clear all tribute and spectators
@@ -64,7 +64,8 @@ Major (x.1.x)(ex: 1.2.1 to 1.3)
  8. Find a new location for the arena and configure 'config.yml' to your liking
  9. Restart the server one more time
 
-------------------- CHANGELOG ------------------- 
+
+CHANGELOG
 
 v 1.3.4
  * Bug fixes

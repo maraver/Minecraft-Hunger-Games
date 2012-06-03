@@ -1,8 +1,9 @@
 --------------------------------------------------------------------------------------------------------------
-The Hunger Games Plugin v 1.4 for bukkit servers
+<h2>The Hunger Games Plugin v 1.4 for bukkit servers</h2>
+
 --------------------------------------------------------------------------------------------------------------
 
-IMPORTANT
+<h3>IMPORTANT</h3>
 
 For the time being, once you have configured radius, centerX, and centerZ 
 and created the arena it is important that the do NOT change

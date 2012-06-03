@@ -32,7 +32,7 @@ and created the arena it is important that the do NOT change
 
 <h4>------- special notes --------</h4>
     
-To 1.3.X
+<h5>To 1.3.X</h5>
  * You must have 1.3 before you can update to 1.3.X
  *  Ignore the warning that look like this:  Invalid type for tribute's HashMap in bin
 
@@ -43,10 +43,10 @@ To 1.3.X
           * use /games-end to clear all tribute and spectators
           * you have to manually remove all GM (/games-ungamemaker <name>)
 
-<h5>Minor (x.x.1)(ex: 1.3 to 1.3.1)</h5>
+<h5>Minor (x.x.1)<i>(ex: 1.3 to 1.3.1)</i></h5>
  2. Replace your current version of 'minecraftgames.jar' with the new one. Change nothing else
 
-<h5>Major (x.1.x)(ex: 1.2.1 to 1.3)</h5>
+<h5>Major (x.1.x)<i>(ex: 1.2.1 to 1.3)</i></h5>
  2. Make a backup of 'config.yml' so you can find the centerX, centerZ, and radius from before the update
  3. Delete all Hunger Games files
  4. Drag and drop the new 'minecraftgames.jar' file

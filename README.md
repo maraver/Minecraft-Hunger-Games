@@ -30,7 +30,7 @@ Starting your first Games
  6. Count down or something the use '/games-start'
 
 --------------------------------------------------------------------------------------------------------------
-UPDATING
+<b>UPDATING</b>
 
    ------- special notes --------
     

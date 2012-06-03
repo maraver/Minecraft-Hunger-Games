@@ -1,7 +1,6 @@
-#####################################################
-The Hunger Games Plugin v 1.4
- - for bukkit servers
-#####################################################
+------------------------------------------------------
+The Hunger Games Plugin v 1.4 for bukkit servers
+------------------------------------------------------
 
 ________ IMPORTANT ________
 For the time being, once you have configured radius, centerX, and centerZ 

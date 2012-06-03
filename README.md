@@ -4,18 +4,18 @@ The Hunger Games Plugin v 1.4
 #####################################################
 
 ________ IMPORTANT ________
- * For the time being, once you have configured radius, centerX, and centerZ 
+For the time being, once you have configured radius, centerX, and centerZ 
 and created the arena it is important that the do NOT change
 
 ________ SETTING UP _______
 Setting up the plugin
  1. Download Bukkit and configure the server like normal
- 2. If you haven’t already start the server at least once before installing the plugin
+ 2. If you havenï¿½t already start the server at least once before installing the plugin
  3. Safely stop the server to save the world (using the stop command)
  4. Drag and drop the hungergames.jar file into the plugins folder of your server like normal
- 5. Restart the server. You will get a message saying “A starting location hasn’t been set!”
+ 5. Restart the server. You will get a message saying ï¿½A starting location hasnï¿½t been set!ï¿½
  6. Connect to the server and find the point you want to be the start and center of the arena using f3
- 7. Open the config.yml in the new ‘The Hunger Games’ that has been created (notepad may not work, try notepad++)
+ 7. Open the config.yml in the new ï¿½The Hunger Gamesï¿½ that has been created (notepad may not work, try notepad++)
  8. In the file change the diameter of the arena, the amount of items randomly placed need the cornucopia, and the centerX and Z to the      ones you choose
  9. Restart the server, it should work. You may get and error just move the centerX and Z accoring to what it says
 

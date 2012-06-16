@@ -1,4 +1,4 @@
-<h2>The Hunger Games Plugin v 1.4 for bukkit servers</h2>
+<h2>The Hunger Games Plugin v 1.3.5 for bukkit servers</h2>
 
 <h3>IMPORTANT</h3>
 
@@ -63,6 +63,14 @@ and created the arena it is important that the do NOT change
 
 --------------------------------------------------------------------------------------------------------------
 <h3>CHANGELOG</h3>
+
+<h4>v 1.3.5</h4>
+ * Games-save command to save the arena
+ * Custom winnings
+ * Option to disable mining
+ * better help with installing
+ * bug fixes with HungerGames.gamemaker permissions
+ * bug fixes to autorun
 
 <h4>v 1.3.4</h4>
  * Bug fixes

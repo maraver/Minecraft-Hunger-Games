@@ -72,6 +72,8 @@ public class HungerGames extends JavaPlugin implements Listener {
 	BlockSaver blockSaver;
 	InventorySaver invSaver;
 	
+	boolean installed = true;
+	
 	// Configuration
 	boolean hasCreatedArena = false;
 	boolean protectGamesTNT = false;
@@ -81,6 +83,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 	boolean compassPoint = true;
 	boolean updating = false;
 	boolean dayAtStart = false;
+	boolean allowMining = true;
 	int respawnItemsTime = 300;
 	// autorun stuff
 	Autorun autorun;
@@ -116,25 +119,40 @@ public class HungerGames extends JavaPlugin implements Listener {
 	public void onEnable() { 
 		rand = new Random();
 		log = this.getLogger();	
-		getServer().getPluginManager().registerEvents(this, this);
-		blockSaver = new BlockSaver(this);
-		getServer().getPluginManager().registerEvents(blockSaver, this);
-		invSaver = new InventorySaver();
 		
 		loadWorldName();
 		loadConfig();
 		
 		addRecipe();
 		cGen = new CustomGen(this, radius, items, centerX, centerZ, depth);
+		blockSaver = new BlockSaver(this);
 		
 		world = this.getServer().getWorld(worldName);
 		
 		boolean loaded = loadWorld();
 		// failed to load, shutdown
 		if (!loaded) {
-			setEnabled(false);
+			// only save if has started
+			if (hasCreatedArena) {
+				saveBinFile();
+				blockSaver.saveBlockFile();
+				cGen.randItems.saveItems();
+			}
+			
+			// remove all helper classes
+			blockSaver = null;
+			cGen = null;
+			invSaver = null;
+			autorun = null;
+			
+			installed = false;
+			log.warning("The Hunger Games Plugin Not Installed");
 			return;
 		}
+		
+		getServer().getPluginManager().registerEvents(this, this);
+		getServer().getPluginManager().registerEvents(blockSaver, this);
+		invSaver = new InventorySaver();
 		
 		playerInBed = new HashMap<String, Long>();
 		lastGiveItem = new HashMap<String, Long>();
@@ -159,6 +177,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			cGen.randItems.saveItems();
 		}
 		
+		installed = false;
 		log.warning("The Hunger Games Plugin Disabled");
 	}
 	
@@ -293,6 +312,10 @@ public class HungerGames extends JavaPlugin implements Listener {
 			updating = cs.getBoolean("updating");
 		} else hasFound = false;
 		
+		if (cs.contains("allowMining")) {
+			allowMining = cs.getBoolean("allowMining");
+		} else hasFound = false;
+		
 		return hasFound;
 	}
 	
@@ -333,6 +356,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 		loadOnce.put("spawnInArena", spawnInArena);
 		loadOnce.put("remove", removeArena);
 		loadOnce.put("updating", updating);
+		loadOnce.put("allowMining", allowMining);
 		getConfig().createSection("loadOnce", loadOnce);
 		
 		// refresh section
@@ -381,7 +405,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 		}
 	}
 	
-	private boolean loadWorld() {		
+	private boolean loadWorld() {	
 		// Load world and create blocks
 		if (world != null) {
 			loadBinFile();
@@ -451,6 +475,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 		
 		// something screwed up
 		if (arenaSpawnLoc == null || arenaSpectateLoc == null || !hasCreatedArena) {
+			installed = false;
 			log.warning("Failed to load The Hunger Games plugin!");
 			return false;
 		}
@@ -786,6 +811,13 @@ public class HungerGames extends JavaPlugin implements Listener {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+		if (!installed) {
+			sender.sendMessage(ChatColor.RED + "- The Hunger Games hasn't been installed properly!");
+			sender.sendMessage(ChatColor.RED + "- See the console output for more error info");
+			sender.sendMessage(ChatColor.RED + "- Please follow the instructions in the readme");
+			return true;
+		}
+		
 		Player player = null;
 		if (sender instanceof Player) {
 			player = (Player) sender;
@@ -885,7 +917,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-start") && args.length == 0) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if(gamePrepare && !gameHasStarted && tributeCount >= MIN_TRIB) {
 					startGame();
 					saveBinFile();
@@ -900,7 +932,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-end") && args.length == 0) {
 			if (player != null) {
-				if (player.isOp()) {
+				if (sender.hasPermission("HungerGames.gamemaker")) {
 					if (gameReady() || gameAccept) {
 						if(gamemakers.containsKey(player.getName())) {
 							restartGame();
@@ -919,7 +951,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-prepare") && args.length == 0) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if(!gameReady() && gameAccept && tributeCount >= MIN_TRIB) {
 					prepareGame();
 					sender.sendMessage(ChatColor.AQUA + "The Game has been prepared");
@@ -936,7 +968,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-accept") && args.length == 0) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if (!gameReady() && !gameAccept) {
 					acceptTributes();
 				} else if(gameReady()) {
@@ -947,7 +979,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-tribute") && args.length >= 1) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				Player p = this.getServer().getPlayer(args[0]);
 				if (p != null) {
 					if (p.isOnline()) {
@@ -966,7 +998,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-tpspawn") && args.length >= 1) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				Player p = this.getServer().getPlayer(args[0]);
 				if (p != null) {
 					if (p.isOnline()) {
@@ -992,7 +1024,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 		} else if(cmd.getName().equalsIgnoreCase("games-gamemaker") && (args.length == 0 || args.length == 1)) {
 			if (!gameReady()) {
 				if (args.length == 0) {
-					if (player != null && sender.isOp()) {
+					if (player != null && sender.hasPermission("HungerGames.gamemaker")) {
 						boolean result = makeGameMaster(player);
 						
 						if (!result) {
@@ -1004,7 +1036,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 						return true;
 					}
 				} else if (args.length == 1){
-					if (sender.isOp()) {
+					if (sender.hasPermission("HungerGames.gamemaker")) {
 						Player otherP = this.getServer().getPlayer(args[0]);
 						if (otherP != null) {
 							if (otherP.isOnline()) {
@@ -1023,13 +1055,13 @@ public class HungerGames extends JavaPlugin implements Listener {
 					return true;
 				}
 			} else {
-				if (sender.isOp()) {
+				if (sender.hasPermission("HungerGames.gamemaker")) {
 					sender.sendMessage(ChatColor.RED + "The Games have already started!");
 					return true;
 				}
 			}
 		} else if(cmd.getName().equalsIgnoreCase("games-ungamemaker") && (args.length == 0 || args.length == 1)) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if (args.length == 0) {
 					if (player != null) {
 						unGameMaster(player);
@@ -1052,7 +1084,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				}
 			}
 		} else if (cmd.getName().equalsIgnoreCase("games-unTrib") && args.length == 1) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if (tributes.containsKey(args[0])) {
 					Player tribP = this.getServer().getPlayer(args[0]);
 					// if they are online kill, else mark
@@ -1067,7 +1099,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if (cmd.getName().equalsIgnoreCase("games-unSpec") && args.length == 1) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if (spectators.containsKey(args[0])) {
 					Player specP = this.getServer().getPlayer(args[0]);
 					// if they are online kill, else mark
@@ -1082,7 +1114,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				return true;
 			}
 		} else if (cmd.getName().equalsIgnoreCase("games-refreshConfig") && args.length == 0) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				refreshConfig();
 				sender.sendMessage(ChatColor.AQUA + "The config has been reloaded");
 				return true;
@@ -1123,7 +1155,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 				sender.sendMessage(ChatColor.AQUA + "The Games are dorment");
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("games-storm") && args.length == 0) {
-			if (sender.isOp()) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
 				world.setStorm(!world.hasStorm());
 				if (world.hasStorm()) {
 					world.setWeatherDuration(Integer.MAX_VALUE);
@@ -1133,6 +1165,12 @@ public class HungerGames extends JavaPlugin implements Listener {
 				}
 			}
 			return true;
+		} else if (cmd.getName().equalsIgnoreCase("games-save") && args.length == 0) {
+			if (sender.hasPermission("HungerGames.gamemaker")) {
+				blockSaver.clearResort();
+				sender.sendMessage(ChatColor.AQUA + "The arena has been saved");
+				return true;
+			}
 		}
 		
 		return false;
@@ -1439,21 +1477,34 @@ public class HungerGames extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onBlockDestroyed(BlockBreakEvent e) {
 		String name = e.getPlayer().getName();
-		if (spectators.containsKey(name)) {
+		if (!inArena(e.getBlock().getLocation())) {
+			return;
+		} else if (spectators.containsKey(name)) {
 			e.setCancelled(true);
 			return;
 		} else if (gamemakers.containsKey(name)) {
 			return;
 		}
 		
-		if (doProtectGame() && inArena(e.getBlock().getLocation()) && noGMaker(e.getPlayer())) {
+		if (doProtectGame() && noGMaker(e.getPlayer())) {
 			e.getPlayer().sendMessage(ChatColor.RED + "The Games haven't started yet!");
 			e.setCancelled(true);
 			return;
 		}
 		
 		Block b = e.getBlock();
-		if (b.getType() == Material.GLASS || b.getType() == Material.SMOOTH_BRICK ||
+		if (!allowMining && !(b.getType() == Material.LONG_GRASS || b.getType() == Material.BROWN_MUSHROOM || 
+				b.getType() == Material.CACTUS || b.getType() == Material.CROPS || 
+				b.getType() == Material.DEAD_BUSH || b.getType() == Material.ICE || 
+				b.getType() == Material.LEAVES || b.getType() == Material.MELON ||
+				b.getType() == Material.YELLOW_FLOWER || b.getType() == Material.WOOL ||
+				b.getType() == Material.VINE || b.getType() == Material.SUGAR_CANE_BLOCK ||
+				b.getType() == Material.SAPLING || b.getType() == Material.RED_ROSE || 
+				b.getType() == Material.RED_MUSHROOM || b.getType() == Material.PUMPKIN ||
+				b.getType() == Material.MELON)) {
+			e.getPlayer().sendMessage(ChatColor.RED + "You can't mine that block!");
+			e.setCancelled(true);
+		} else if (b.getType() == Material.GLASS || b.getType() == Material.SMOOTH_BRICK ||
 				b.getType() == Material.WOOD_PLATE || b.getType() == Material.STONE_PLATE ||
 				b.getType() == Material.GOLD_BLOCK || b.getType() == Material.PISTON_STICKY_BASE) {
 			if (b.getData() == (byte) 6) {
@@ -1465,7 +1516,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityExplode(EntityExplodeEvent e) {		
+	public void onEntityExplode(EntityExplodeEvent e) {	
 		ArrayList<Block> remove = new ArrayList<Block>();
 		for(Block b:e.blockList()) {
 			// if in arena
@@ -1907,14 +1958,15 @@ public class HungerGames extends JavaPlugin implements Listener {
 			tributes.remove(winner);
 			if (pWinner != null) {
 				pWinner.setHealth(pWinner.getMaxHealth());
+				pWinner.setDisplayName(pWinner.getName());
 				
 				// Reward
 				invSaver.restoreInventory(pWinner);
 				pWinner.giveExp(500);
 				Inventory pWinInv = pWinner.getInventory();
-				pWinInv.addItem(new ItemStack(Material.DIAMOND_BLOCK, 1));
-				pWinInv.addItem(new ItemStack(Material.IRON_BLOCK, 5));
-				pWinInv.addItem(new ItemStack(Material.GOLD_BLOCK, 3));
+				for (ItemStack is : cGen.randItems.getRewards()) {
+					pWinInv.addItem(is);
+				}
 				
 				tpToSpawn(pWinner);
 				

@@ -157,8 +157,7 @@ public class Autorun implements ActionListener {
 		}
 	}
 	
-	public void autoChoosePlayerAsTribute(Player p, boolean justConnected) {
-		
+	public boolean autoChoosePlayerAsTribute(Player p, boolean justConnected) {
 		List<Player> players = plugin.world.getPlayers();
 		int size = players.size();
 		
@@ -166,13 +165,16 @@ public class Autorun implements ActionListener {
 		if (justConnected) size += 1;
 		
 		if (pickedTributes < randomPickTributes && pickedTributes < size &&
-						plugin.tributes.size() < CustomGen.MAX_TRIB && !plugin.tributes.contains(p.getName()) &&
-						!plugin.dontChoose.contains(p.getName())) {
+						plugin.tributes.size() < CustomGen.MAX_TRIB && !plugin.tributes.containsKey(p.getName()) &&
+						!plugin.dontChoose.contains(p.getName()) && !plugin.gamemakers.containsKey(p.getName())) {
 			plugin.makeTribute(p);
 			plugin.getServer().broadcastMessage(ChatColor.BLUE + p.getName() + 
 					ChatColor.WHITE + " has been chosen as a tribute!");
 			pickedTributes++;
+			
+			return true;
 		}
+		return false;
 	}
 	
 	public void gamesStarted() {
@@ -195,10 +197,11 @@ public class Autorun implements ActionListener {
 		if (randomPickTributes > 0) {
 			pickedTributes = 0;
 
+			int tries = 0;
 			List<Player> players = plugin.world.getPlayers();
 			// loop until there are enough tributes or have everyone online or tributes is full
 			while (pickedTributes < randomPickTributes && pickedTributes < players.size() &&
-					plugin.tributes.size() < CustomGen.MAX_TRIB) {
+					plugin.tributes.size() < CustomGen.MAX_TRIB && tries < 10) {
 				for (Player p:players) {
 					// if have enough or have all no need to go through rest
 					if (pickedTributes >= randomPickTributes || pickedTributes >= players.size() ||
@@ -207,13 +210,11 @@ public class Autorun implements ActionListener {
 					// 50% chance to be drafted
 					if (r.nextBoolean()) {
 						// if not already a tribute
-						if (!plugin.tributes.contains(p)) {
-							// make them a tribute
-							autoChoosePlayerAsTribute(p, false);
+						if (autoChoosePlayerAsTribute(p, false))
 							pickedTributes++;
-						}
 					}
 				}
+				tries++;
 			}
 		}
 		

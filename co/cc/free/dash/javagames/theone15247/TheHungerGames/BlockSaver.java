@@ -200,4 +200,8 @@ public class BlockSaver implements Listener {
 		
 		plugin.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + "Done resorting.");
 	}
+
+	public void clearResort() {
+		resortBlocks.clear();
+	}
 }

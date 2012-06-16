@@ -20,12 +20,14 @@ public class CustomRandomItems {
 	World w;
 	Random r;
 	LinkedHashMap<Material, int[]> randomItems;
+	LinkedHashMap<Material, int[]> rewardItems;
 	
 	public CustomRandomItems(HungerGames hg, World w) {
 		plugin = hg;
 		this.w = w;
 		r = new Random();
 		randomItems = new LinkedHashMap<Material, int[]>();
+		rewardItems = new LinkedHashMap<Material, int[]>();
 	}
 	
 	public void saveItems() {
@@ -131,7 +133,7 @@ public class CustomRandomItems {
 				f.createNewFile();
 				BufferedWriter os = new BufferedWriter(new FileWriter(f));
 				
-				os.write("// material:min-max");
+				os.write("// material:min-max:isreward");
 				os.newLine();
 				
 				// write each entry
@@ -189,7 +191,7 @@ public class CustomRandomItems {
 				for (String s:itemsAsString) {
 					if (!s.trim().startsWith("//")) {
 						String[] splitString = s.split(":");
-						if (splitString.length == 2) {
+						if (splitString.length == 2 || splitString.length == 3) {
 							boolean error = false;
 							
 							String[] splitRange = splitString[1].split("-");
@@ -200,6 +202,7 @@ public class CustomRandomItems {
 								error = true;
 							}
 							
+							boolean reward = false;
 							int min = 0, max = 0;
 							try {
 								if (splitRange.length == 1 && !error) {
@@ -212,6 +215,10 @@ public class CustomRandomItems {
 									plugin.log.warning("Error parsing line in items_" + w.getName() + ".txt! Invalid dash count");
 									error = true;
 								}
+								
+								if (splitString.length == 3 && !error) {
+									reward = Boolean.valueOf(splitString[2].trim());
+								}
 							} catch (NumberFormatException e) {
 								plugin.log.warning("Error parsing line in items_" + w.getName() + ".txt! Number Format Exception");
 								error = true;
@@ -219,6 +226,8 @@ public class CustomRandomItems {
 							
 							if (!error) {
 								randomItems.put(material, new int[] {min, max});
+								if (reward)
+									rewardItems.put(material, new int[] {min, max});
 							}
 						} else {
 							plugin.log.warning("Error parsing line in items_" + w.getName() + ".txt! Invalid colon count");
@@ -229,6 +238,45 @@ public class CustomRandomItems {
 		} else {
 			plugin.log.warning("Failed to load custom items");
 		}
+	}
+	
+	public ArrayList<ItemStack> getRewards() {
+		ArrayList<ItemStack> reward = new ArrayList<ItemStack>();
+		if (rewardItems.size() <= 0) {
+			// DEFAULT REWARD
+			reward.add(new ItemStack(Material.DIAMOND_BLOCK, 1));
+			reward.add(new ItemStack(Material.IRON_BLOCK, 5));
+			reward.add(new ItemStack(Material.GOLD_BLOCK, 3));
+		} else {
+			for (int index=0; index<rewardItems.size(); index++) {
+				Material m = rewardItems.keySet().toArray(new Material[2])[index];
+				
+				boolean error = false;
+				Integer min = 0, max = 0;
+				int dataLength = rewardItems.get(m).length;
+				if (dataLength == 1) {
+					min = max = rewardItems.get(m)[0];
+				} else if (dataLength == 2) {
+					min = rewardItems.get(m)[0];
+					max = rewardItems.get(m)[1];
+				} else {
+					plugin.log.warning("Error getting min and max for custom random items!");
+					if (m != null) {
+						plugin.log.warning("Replaced with one " + m.name() + "!");
+						reward.add(new ItemStack(m, 1));
+					} else {
+						plugin.log.warning("Replaced with 16 COBBLESTONE!");
+						reward.add(new ItemStack(Material.COBBLESTONE, 16));
+					}
+					error = true;
+				}
+				
+				if (!error)
+					reward.add(new ItemStack(m, r.nextInt(max-min+1) + min));
+			}
+		}
+		
+		return reward;
 	}
 	
 	public ItemStack getRandomItem() {
@@ -258,7 +306,7 @@ public class CustomRandomItems {
 		}
 		
 		// because nextFloat is exclusive will never get 1 so 4.999 becomes 4
-		return new ItemStack(m, (int) ((max - min + 1) * r.nextFloat() + min));
+		return new ItemStack(m, r.nextInt(max-min+1) + min);
 	}
 	
 	private ItemStack createPotion() {

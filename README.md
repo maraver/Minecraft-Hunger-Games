@@ -64,6 +64,9 @@ and created the arena it is important that the do NOT change
 --------------------------------------------------------------------------------------------------------------
 <h3>CHANGELOG</h3>
 
+<h4>v 1.3.5b</h4>
+ * Fixed custom winnings
+
 <h4>v 1.3.5</h4>
  * Games-save command to save the arena
  * Custom winnings

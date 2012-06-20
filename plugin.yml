@@ -2,7 +2,7 @@ name: The Hunger Games
 author: John Espenhahn
 website: free-javagames.co.cc
 main: co.cc.free.dash.javagames.theone15247.TheHungerGames.HungerGames
-version: 1.3.4
+version: 1.3.5b
 
 commands:
    games-volunteer:
@@ -112,6 +112,11 @@ commands:
        usage: Syntax error! Use /games-storm
        permissions: HungerGames.admin
        permissions-message: You don't have OP permissions
+   games-save:
+       description: Saves the current arena
+       usage: Syntax error! Use /games-save
+       permissions: HungerGames.admin
+       permissions-message: You don't have OP permissions
       
 permissions:
     HungerGames.default:
@@ -122,6 +127,7 @@ permissions:
         default: op
         children:
            HungerGames.default: true
+           HungerGames.gamemaker: true
     HungerGames.gamemaker:
         description: Gamemaker permissions
         default: false

@@ -178,7 +178,7 @@ public class CustomGen {
 			plugin.log.info("Arena created in " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
 		}
 		
-		Location spectateLoc = new Location(w, CornustartX, w.getHighestBlockYAt(CornustartX, CornustartZ) + 20, CornustartZ);
+		Location spectateLoc = new Location(w, CornustartX, w.getHighestBlockYAt(CornustartX, CornustartZ), CornustartZ);
 		return new Location[] {spawnLoc, spectateLoc};
 	}
 	

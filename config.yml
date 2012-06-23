@@ -8,10 +8,12 @@ loadOnce:
   remove: false
   spawnInArena: false
   allowMining: true
+  gmCreative: true
 refresh:
   tribHearDist: 25
   protectGamesTNT: false
   items: 10
+  fullArena: false
   unOP: false
   compassPoint: true
   autorun:

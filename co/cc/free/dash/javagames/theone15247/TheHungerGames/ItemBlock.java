@@ -53,7 +53,7 @@ public class ItemBlock implements Serializable {
 		}
 	}
 	
-	public void recreateInWorld(World w) {
+	private void recreateInWorld(World w) {
 		Location blockLoc = new Location(w, location[0], location[1], location[2]);
 		block = w.getBlockAt(blockLoc);
 		block.setType(Material.BEDROCK);

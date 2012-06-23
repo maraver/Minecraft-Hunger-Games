@@ -62,8 +62,8 @@ import org.bukkit.util.Vector;
 public class HungerGames extends JavaPlugin implements Listener {
 	final static int MIN_RADIUS = 70;
 	final static int UP_AMOUNT = 1;
-	// TODO 2
-	public final static int MIN_TRIB = 1;
+	final static int BUILD_UP  = 4;
+	public final static int MIN_TRIB = 0; // TODO 2
 	
 	Logger log;
 	Autorun auto;
@@ -84,6 +84,8 @@ public class HungerGames extends JavaPlugin implements Listener {
 	boolean updating = false;
 	boolean dayAtStart = false;
 	boolean allowMining = true;
+	boolean gmCreative = true;
+	boolean fullArena = false;
 	int respawnItemsTime = 300;
 	// autorun stuff
 	Autorun autorun;
@@ -202,6 +204,10 @@ public class HungerGames extends JavaPlugin implements Listener {
 			}
 		} else hasFound = false;
 		
+		if (cs.contains("fullArena")) {
+			fullArena = cs.getBoolean("fullArena");
+		} else hasFound = false;
+		
 		if (cs.contains("tribHearDist")) {
 			tribHearDist = cs.getInt("tribHearDist");
 		} else hasFound = false;
@@ -252,7 +258,6 @@ public class HungerGames extends JavaPlugin implements Listener {
 			// setup autorun
 			if (autorun == null)
 				autorun = new Autorun(this, betweenGamesSec, startingTribs, randomPickTribs, tribWaitSec, respawnItemsTime);
-			// TODO start autorun
 		}
 	}
 	
@@ -316,6 +321,10 @@ public class HungerGames extends JavaPlugin implements Listener {
 			allowMining = cs.getBoolean("allowMining");
 		} else hasFound = false;
 		
+		if (cs.contains("gmCreative")) {
+			gmCreative = cs.getBoolean("gmCreative");
+		} else hasFound = false;
+		
 		return hasFound;
 	}
 	
@@ -357,11 +366,13 @@ public class HungerGames extends JavaPlugin implements Listener {
 		loadOnce.put("remove", removeArena);
 		loadOnce.put("updating", updating);
 		loadOnce.put("allowMining", allowMining);
+		loadOnce.put("gmCreative", gmCreative);
 		getConfig().createSection("loadOnce", loadOnce);
 		
 		// refresh section
 		Map<String, Object> refresh = new LinkedHashMap<String, Object>(new HashMap<String, Object>());
 		refresh.put("items", items);
+		refresh.put("fullArena", fullArena);
 		refresh.put("tribHearDist", tribHearDist);
 		refresh.put("protectGamesTNT", protectGamesTNT);
 		refresh.put("unOP", unOP);
@@ -379,7 +390,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			autorun.put("respawnItemsTime", respawnItemsTime);
 			refreshSec.createSection("autorun", autorun);
 		
-		this.saveConfig();
+		saveConfig();
 	}
 	
 	private void loadWorldName() {
@@ -425,7 +436,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 						world.getHighestBlockYAt(cGen.CornustartX, cGen.CornustartZ), 
 						cGen.CornustartZ + CustomGen.SPAWN_Z_OFF);
 				arenaSpectateLoc = new Location(world, cGen.CornustartX, 
-						world.getHighestBlockYAt(cGen.CornustartX, cGen.CornustartZ) + 20, 
+						world.getHighestBlockYAt(cGen.CornustartX, cGen.CornustartZ), 
 						cGen.CornustartZ);;
 				
 				// delete the bin files
@@ -458,9 +469,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 					return false;
 				}
 			} else if (gameReady() && !updating) {
-				// TODO for now just clear the chests to prevent errors
 				cGen.clearChests(world);
-				recreateChests(world);
 			// if updating don't create the arena
 			} else if (updating) {
 				// TODO change if updating changes
@@ -481,10 +490,6 @@ public class HungerGames extends JavaPlugin implements Listener {
 		}
 		
 		return true;
-	}
-	
-	private void recreateChests(World w) {
-		// TODO recreateChests is the server has been restarted while the games are ready
 	}
 	
 	private void deleteBinFiles() {
@@ -632,19 +637,15 @@ public class HungerGames extends JavaPlugin implements Listener {
 		}
 	}
 	
+	// TODO test with rooms at spawn
 	private void tpToSpawn(Player p) {
 		Location l = p.getWorld().getSpawnLocation();
+		l.add(0, -2, 0);
 		p.setNoDamageTicks(60);
 		p.setVelocity(new Vector(0,0,0));
-		tpTo(p, new Location(p.getWorld(),
-				l.getBlockX() + 0.5, 
-				p.getWorld().getHighestBlockYAt(l.getBlockX(), l.getBlockZ()) + UP_AMOUNT, 
-				l.getBlockZ() + 0.5));
+		tpTo(p, l);
 	}
 	
-	/**
-	 *  TODO use in place of p.teleport(l);
-	 **/
 	private void tpTo(Player p, Location l) {
 		tpTo(p, l, 0);
 	}
@@ -652,8 +653,8 @@ public class HungerGames extends JavaPlugin implements Listener {
 		int x = l.getBlockX();
 		int z = l.getBlockZ();
 		for (int y=l.getBlockY()+2; y<world.getMaxHeight(); y++) {
-			if (world.getBlockAt(x, y, z).getType() == Material.AIR &&
-					world.getBlockAt(x, y+1, z).getType() == Material.AIR) {
+			if (isFakeBlock(world.getBlockAt(x, y, z)) &&
+					isFakeBlock(world.getBlockAt(x, y+1, z))) {
 				p.teleport(new Location(world, x, y + yOffset, z));
 				return;
 			}
@@ -664,8 +665,11 @@ public class HungerGames extends JavaPlugin implements Listener {
 	}
 		
 	protected boolean makeTribute(Player player) {
-		if(!tributes.containsKey(player.getName()) && !gamemakers.containsKey(player.getName()) &&
-				gameAccept && !gameReady() && tributeCount < CustomGen.MAX_TRIB) {
+		if(!player.hasPermission("HungerGames.outcast") &&
+				!tributes.containsKey(player.getName()) && 
+				!gamemakers.containsKey(player.getName()) &&
+				gameAccept && !gameReady() && 
+				tributeCount < CustomGen.MAX_TRIB) {
 			
 			tributeCount++;
 			int i = tributeCount;
@@ -740,8 +744,11 @@ public class HungerGames extends JavaPlugin implements Listener {
 		spectators.remove(p.getName());
 		unSpectators.remove(p.getName());
 		
-		p.setAllowFlight(false);
 		tpToSpawn(p);
+		p.setFlying(false);
+		p.setVelocity(new Vector(0, 0, 0));
+		p.setAllowFlight(false);
+		
 		p.setDisplayName(p.getName());
 		saveBinFile();
 		p.setDisplayName(ChatColor.WHITE + p.getName());
@@ -771,10 +778,16 @@ public class HungerGames extends JavaPlugin implements Listener {
 			
 			hideFrom(tributes, spectators, p);
 			
-			gamemakers.put(p.getName(), (byte) 0);			
-			p.setGameMode(GameMode.CREATIVE);
-			p.setVelocity(new Vector(0,0,0));
+			gamemakers.put(p.getName(), (byte) 0);	
+			
+			if (gmCreative)
+				p.setGameMode(GameMode.CREATIVE);
+			
 			tpTo(p, arenaSpectateLoc);
+			p.setAllowFlight(true);
+			p.setVelocity(new Vector(0, 0, 0));
+			p.setFlying(true);
+			
 			this.getServer().broadcastMessage(
 					ChatColor.BLUE + p.getName() + 
 					ChatColor.WHITE + " has become a Gamemaker");
@@ -801,6 +814,9 @@ public class HungerGames extends JavaPlugin implements Listener {
 		}
 	}
 	
+	/**
+	 * @return True if has started or prepared
+	 */
 	public boolean gameReady() {
 		return gameHasStarted || gamePrepare;
 	}
@@ -954,7 +970,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			if (sender.hasPermission("HungerGames.gamemaker")) {
 				if(!gameReady() && gameAccept && tributeCount >= MIN_TRIB) {
 					prepareGame();
-					sender.sendMessage(ChatColor.AQUA + "The Game has been prepared");
+					sender.sendMessage(ChatColor.BLUE + "The Game has been prepared");
 					saveBinFile();
 				} else if (!gameAccept) {
 					sender.sendMessage(ChatColor.RED + "The Game must be accepting tributes first! Use /games-accept");
@@ -1207,7 +1223,6 @@ public class HungerGames extends JavaPlugin implements Listener {
 		
 		// if want to be day at start
 		this.getServer().broadcastMessage(ChatColor.BLUE + "The Hunger Games is now accepting tributes!");
-		
 	}
 	
 	protected void prepareGame() {				
@@ -1230,10 +1245,14 @@ public class HungerGames extends JavaPlugin implements Listener {
 			
 			Location tpLoc = new Location(world, 
 					arenaSpawnLoc.getBlockX() - 1, 
-					world.getHighestBlockYAt((int) (arenaSpawnLoc.getBlockX() - 1 + vec.getX()), (int) (arenaSpawnLoc.getBlockZ() + vec.getZ())) + 3,
+					0, 
 					arenaSpawnLoc.getBlockZ()).add(vec);
 			
-			// create floor			
+			tpLoc.add(0, 
+					getHighestRealBlockY(world, tpLoc.getBlockX(), tpLoc.getBlockZ()) + BUILD_UP, 
+					0);
+			
+			// create floor
 			CustomGen.turnToUnbreakable(
 					world, Material.GLASS, tpLoc.getBlockX(), tpLoc.getBlockY(), tpLoc.getBlockZ(), true);
 			CustomGen.turnToUnbreakable(
@@ -1284,38 +1303,45 @@ public class HungerGames extends JavaPlugin implements Listener {
 			Vector uV = new Vector(2, 0, 3);
 			vec.add(uV);
 			
-			Location tpLoc = new Location(world, 
+			Location bLoc = new Location(world, 
 					arenaSpawnLoc.getBlockX() - 1, 
-					world.getHighestBlockYAt((int) (arenaSpawnLoc.getBlockX() - 1 + vec.getX()), (int) (arenaSpawnLoc.getBlockZ() + vec.getZ())) + 3,
+					0, 
 					arenaSpawnLoc.getBlockZ()).add(vec);
 			
+			bLoc.add(0, 
+					getHighestRealBlockY(world, bLoc.getBlockX(), bLoc.getBlockZ()) + BUILD_UP, 
+					0);
+			
+			// TODO clearing plates with leaves overhead
+			
+			int a = 2;
 			// clear plates
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() - 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ(), true);
+					world, Material.AIR, bLoc.getBlockX() - 1, bLoc.getBlockY()+a, bLoc.getBlockZ(), true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() - 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 1, true);
+					world, Material.AIR, bLoc.getBlockX() - 1, bLoc.getBlockY()+a, bLoc.getBlockZ() - 1, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX(), tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+					world, Material.AIR, bLoc.getBlockX(), bLoc.getBlockY()+a, bLoc.getBlockZ() - 2, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() + 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+					world, Material.AIR, bLoc.getBlockX() + 1, bLoc.getBlockY()+a, bLoc.getBlockZ() - 2, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() + 2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 1, true);
+					world, Material.AIR, bLoc.getBlockX() + 2, bLoc.getBlockY()+a, bLoc.getBlockZ() - 1, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() + 2, tpLoc.getBlockY()+2, tpLoc.getBlockZ(), true);
+					world, Material.AIR, bLoc.getBlockX() + 2, bLoc.getBlockY()+a, bLoc.getBlockZ(), true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX() + 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+					world, Material.AIR, bLoc.getBlockX() + 1, bLoc.getBlockY()+a, bLoc.getBlockZ() + 1, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX(), tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+					world, Material.AIR, bLoc.getBlockX(), bLoc.getBlockY()+a, bLoc.getBlockZ() + 1, true);
 			
 			// new corners
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX()-1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+					world, Material.AIR, bLoc.getBlockX()-1, bLoc.getBlockY()+a, bLoc.getBlockZ() - 2, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX()+2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+					world, Material.AIR, bLoc.getBlockX()+2, bLoc.getBlockY()+a, bLoc.getBlockZ() - 2, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX()+2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+					world, Material.AIR, bLoc.getBlockX()+2, bLoc.getBlockY()+a, bLoc.getBlockZ() + 1, true);
 			CustomGen.turnToUnbreakable(
-					world, Material.AIR, tpLoc.getBlockX()-1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+					world, Material.AIR, bLoc.getBlockX()-1, bLoc.getBlockY()+a, bLoc.getBlockZ() + 1, true);
 		}
 		
 		// started game
@@ -1367,49 +1393,93 @@ public class HungerGames extends JavaPlugin implements Listener {
 				Vector uV = new Vector(2, 0, 3);
 				vec.add(uV);
 				
-				Location tpLoc = new Location(world, 
+				Location bLoc = new Location(world, 
 						arenaSpawnLoc.getBlockX() - 1, 
-						world.getHighestBlockYAt((int) (arenaSpawnLoc.getBlockX() - 1 + vec.getX()), (int) (arenaSpawnLoc.getBlockZ() + vec.getZ())) + 3,
+						0, 
 						arenaSpawnLoc.getBlockZ()).add(vec);
 				
+				bLoc.add(0, 
+						getHighestRealBlockY(world, bLoc.getBlockX(), bLoc.getBlockZ()) + BUILD_UP, 
+						0);
+
 				// clear floor			
 				CustomGen.turnToUnbreakable(
-						world, Material.AIR, tpLoc.getBlockX(), tpLoc.getBlockY(), tpLoc.getBlockZ(), true);
+						world, Material.AIR, bLoc.getBlockX(), bLoc.getBlockY(), bLoc.getBlockZ(), true);
 				CustomGen.turnToUnbreakable(
-						world, Material.AIR, tpLoc.getBlockX() + 1, tpLoc.getBlockY(), tpLoc.getBlockZ(), true);
+						world, Material.AIR, bLoc.getBlockX() + 1, bLoc.getBlockY(), bLoc.getBlockZ(), true);
 				CustomGen.turnToUnbreakable(
-						world, Material.AIR, tpLoc.getBlockX(), tpLoc.getBlockY(), tpLoc.getBlockZ() - 1, true);
+						world, Material.AIR, bLoc.getBlockX(), bLoc.getBlockY(), bLoc.getBlockZ() - 1, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.AIR, tpLoc.getBlockX() + 1, tpLoc.getBlockY(), tpLoc.getBlockZ() - 1, true);
+						world, Material.AIR, bLoc.getBlockX() + 1, bLoc.getBlockY(), bLoc.getBlockZ() - 1, true);
 				// clear plates
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() - 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ(), true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() - 1, bLoc.getBlockY()+2, bLoc.getBlockZ(), true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() - 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() - 1, bLoc.getBlockY()+2, bLoc.getBlockZ() - 1, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX(), tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX(), bLoc.getBlockY()+2, bLoc.getBlockZ() - 2, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() + 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() + 1, bLoc.getBlockY()+2, bLoc.getBlockZ() - 2, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() + 2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() + 2, bLoc.getBlockY()+2, bLoc.getBlockZ() - 1, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() + 2, tpLoc.getBlockY()+2, tpLoc.getBlockZ(), true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() + 2, bLoc.getBlockY()+2, bLoc.getBlockZ(), true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX() + 1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX() + 1, bLoc.getBlockY()+2, bLoc.getBlockZ() + 1, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX(), tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX(), bLoc.getBlockY()+2, bLoc.getBlockZ() + 1, true);
 				
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX()-1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX()-1, bLoc.getBlockY()+2, bLoc.getBlockZ() - 2, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX()+2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() - 2, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX()+2, bLoc.getBlockY()+2, bLoc.getBlockZ() - 2, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX()+2, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX()+2, bLoc.getBlockY()+2, bLoc.getBlockZ() + 1, true);
 				CustomGen.turnToUnbreakable(
-						world, Material.STONE_PLATE, tpLoc.getBlockX()-1, tpLoc.getBlockY()+2, tpLoc.getBlockZ() + 1, true);
+						world, Material.STONE_PLATE, bLoc.getBlockX()-1, bLoc.getBlockY()+2, bLoc.getBlockZ() + 1, true);
 		
 			}
 		}
+	}
+	
+	/**
+	 * All opaque blocks
+	 * @param b Block to test
+	 * @return Is opaque
+	 */
+	private static boolean isFakeBlock(Block b) {
+		return (b.getType() == Material.LONG_GRASS || b.getType() == Material.CACTUS 
+		|| b.getType() == Material.RED_MUSHROOM || b.getType() == Material.RED_ROSE || 
+		b.getType() == Material.DEAD_BUSH || b.getType() == Material.YELLOW_FLOWER || 
+		b.getType() == Material.WATER_LILY || b.getType() == Material.VINE  || 
+		b.getType() == Material.LEAVES ||
+		b.getType() == Material.AIR || b.getType() == Material.BROWN_MUSHROOM ||
+		b.getType() == Material.CROPS || b.getType() == Material.FENCE ||
+		b.getType() == Material.FENCE_GATE || b.getType() == Material.FIRE ||
+		b.getType() == Material.TORCH || b.getType() == Material.SUGAR_CANE_BLOCK ||
+		b.getType() == Material.SNOW ||
+		// CONTROVERSIAL
+		b.getType() == Material.LOG);
+	}
+	
+	/**
+	 * Gets the highest non-opaque block. w.getHighestBlockAt finds the highest non-air/glass
+	 * @return The Y location of the highest non-opaque block
+	 */
+	private int getHighestRealBlockY(World w, int x, int z) {
+		Block b = w.getHighestBlockAt(x, z);
+		int y = b.getY();
+		while (isFakeBlock(b)) {
+			y--;
+			b = w.getBlockAt(x, y, z);
+		}
+		
+		// don't want to drop to bottom of ocean but don't want on top of water
+		if (b.isLiquid()) {
+			y--;
+		}
+		
+		return y;
 	}
 	
 	private boolean noGMaker(Player p) {
@@ -1792,7 +1862,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 						tribString += ", ";
 				}
 				
-				this.getServer().broadcastMessage(ChatColor.GRAY + "The tributes remaining are: " + ChatColor.AQUA + tribString);
+				this.getServer().broadcastMessage(ChatColor.GRAY + "The tributes remaining are: " + ChatColor.BLUE + tribString);
 			} else if (hasShownTributes && ((time > 6000 && time < 12000) || time > 17500 || time < 500)) {
 				hasShownTributes = false;
 			}

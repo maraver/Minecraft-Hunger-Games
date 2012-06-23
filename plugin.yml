@@ -2,7 +2,7 @@ name: The Hunger Games
 author: John Espenhahn
 website: free-javagames.co.cc
 main: co.cc.free.dash.javagames.theone15247.TheHungerGames.HungerGames
-version: 1.3.5b
+version: 1.3.6
 
 commands:
    games-volunteer:
@@ -128,6 +128,12 @@ permissions:
         children:
            HungerGames.default: true
            HungerGames.gamemaker: true
+    HungerGames.outcast:
+        description: Keeps from joining the games
+        default: false
+        children:
+           HungerGames.default: false
+           HungerGames.gamemaker: false
     HungerGames.gamemaker:
         description: Gamemaker permissions
         default: false

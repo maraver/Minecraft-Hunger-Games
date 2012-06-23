@@ -89,7 +89,7 @@ public class BlockSaver implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDestroyed(BlockBreakEvent e) {
-		if (plugin.gamemakers.contains(e.getPlayer().getName())) {	
+		if (plugin.gamemakers.containsKey(e.getPlayer().getName())) {	
 				return;
 		}
 		
@@ -108,7 +108,7 @@ public class BlockSaver implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent e) {
-		if (plugin.gamemakers.contains(e.getPlayer().getName())) {	
+		if (plugin.gamemakers.containsKey(e.getPlayer().getName())) {	
 			return;
 		}
 		
@@ -162,9 +162,7 @@ public class BlockSaver implements Listener {
 	private void doAddBlock(Location l, int m, byte d) {		
 		// if nothing was here before it will resort to air
 		if (plugin.inArena(l)) {
-			synchronized(this) {
-				resortBlocks.push(new int[][] {{l.getBlockX(), l.getBlockY(), l.getBlockZ()}, {m, d}}); // {{location}, {data}}
-			}
+			resortBlocks.push(new int[][] {{l.getBlockX(), l.getBlockY(), l.getBlockZ()}, {m, d}}); // {{location}, {data}}
 		}
 	}
 	

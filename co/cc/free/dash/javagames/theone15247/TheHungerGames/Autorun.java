@@ -157,26 +157,6 @@ public class Autorun implements ActionListener {
 		}
 	}
 	
-	public boolean autoChoosePlayerAsTribute(Player p, boolean justConnected) {
-		List<Player> players = plugin.world.getPlayers();
-		int size = players.size();
-		
-		// This guy just logged in, don't forget them!
-		if (justConnected) size += 1;
-		
-		if (pickedTributes < randomPickTributes && pickedTributes < size &&
-						plugin.tributes.size() < CustomGen.MAX_TRIB && !plugin.tributes.containsKey(p.getName()) &&
-						!plugin.dontChoose.contains(p.getName()) && !plugin.gamemakers.containsKey(p.getName())) {
-			plugin.makeTribute(p);
-			plugin.getServer().broadcastMessage(ChatColor.BLUE + p.getName() + 
-					ChatColor.WHITE + " has been chosen as a tribute!");
-			pickedTributes++;
-			
-			return true;
-		}
-		return false;
-	}
-	
 	public void gamesStarted() {
 		state = 4;
 		timer.setInitialDelay(respawnItemsTime * 1000);
@@ -188,6 +168,29 @@ public class Autorun implements ActionListener {
 		state = 3;
 		timer.setInitialDelay(randomTime());
 		timer.restart();
+	}
+	
+	public boolean autoChoosePlayerAsTribute(Player p, boolean justConnected) {
+		List<Player> players = plugin.world.getPlayers();
+		int size = players.size();
+		
+		// This guy just logged in, don't forget them!
+		if (justConnected) size += 1;
+		
+		if (pickedTributes < randomPickTributes && pickedTributes < size &&
+						plugin.tributes.size() < CustomGen.MAX_TRIB && !plugin.tributes.containsKey(p.getName()) &&
+						!plugin.dontChoose.contains(p.getName()) && !plugin.gamemakers.containsKey(p.getName())) {
+			
+			if (plugin.makeTribute(p)) {
+				plugin.getServer().broadcastMessage(ChatColor.BLUE + p.getName() + 
+						ChatColor.WHITE + " has been chosen as a tribute!");
+				pickedTributes++;
+				
+				return true;
+			}
+			
+		}
+		return false;
 	}
 
 	public void gamesAccepting() {
@@ -201,7 +204,7 @@ public class Autorun implements ActionListener {
 			List<Player> players = plugin.world.getPlayers();
 			// loop until there are enough tributes or have everyone online or tributes is full
 			while (pickedTributes < randomPickTributes && pickedTributes < players.size() &&
-					plugin.tributes.size() < CustomGen.MAX_TRIB && tries < 10) {
+					plugin.tributes.size() < CustomGen.MAX_TRIB && tries < 20) {
 				for (Player p:players) {
 					// if have enough or have all no need to go through rest
 					if (pickedTributes >= randomPickTributes || pickedTributes >= players.size() ||
@@ -210,8 +213,7 @@ public class Autorun implements ActionListener {
 					// 50% chance to be drafted
 					if (r.nextBoolean()) {
 						// if not already a tribute
-						if (autoChoosePlayerAsTribute(p, false))
-							pickedTributes++;
+						autoChoosePlayerAsTribute(p, false);
 					}
 				}
 				tries++;
@@ -220,7 +222,7 @@ public class Autorun implements ActionListener {
 		
 		startAttemps = 0;
 		// start the prepare timer
-		timer.setInitialDelay(this.waitTime * 1000);
+		timer.setInitialDelay(waitTime * 1000);
 		timer.restart();
 	}
 

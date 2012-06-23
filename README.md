@@ -1,4 +1,4 @@
-<h2>The Hunger Games Plugin v 1.3.5 for bukkit servers</h2>
+<h2>The Hunger Games Plugin v 1.3.6 for bukkit servers</h2>
 
 <h3>IMPORTANT</h3>
 
@@ -63,6 +63,16 @@ and created the arena it is important that the do NOT change
 
 --------------------------------------------------------------------------------------------------------------
 <h3>CHANGELOG</h3>
+
+<h4>v 1.3.6</h4>
+ * Set gmCreative in config.yml to false to stop gamemakers from getting creative mode
+ * Set fullArena in config.yml to have the item blocks spread around the entire arena
+ * Give someone HungerGames.outcast permissions to stop them from joining a game
+ * Fixed bug with /games-spawn
+ * Fixed bug with spectators falling to their death
+ * Fixed bug with gamemakers changes not saving
+ * Fixed bug with autorun not picking enough players
+ * Small improvements
 
 <h4>v 1.3.5b</h4>
  * Fixed custom winnings

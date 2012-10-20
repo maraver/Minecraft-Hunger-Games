@@ -2,7 +2,7 @@ name: The Hunger Games
 author: John Espenhahn
 website: free-javagames.co.cc
 main: co.cc.free.dash.javagames.theone15247.TheHungerGames.HungerGames
-version: 1.3.6
+version: 1.4
 
 commands:
    games-volunteer:
@@ -14,7 +14,7 @@ commands:
       description: Choose a player as a tribute.
       usage: Syntax error! Use /games-tribute [name]
       aliases: [games-trib]
-      permission: HungerGames.admin
+      permission: HungerGames.gamemaker
       permissions-message: You don't have OP permissions
    games-spec:
       description: Watch the Hunger Games.
@@ -22,43 +22,43 @@ commands:
       aliases: [games-spectate]
       permission: HungerGames.default
       permissions-message: You don't have basic permissions
-   games-start:
-      description: Start The Games.
-      usage: Syntax error! Use /games-start
-      permission: HungerGames.admin
-      permissions-message: You don't have OP permissions
+   games-accept:
+      description: Start accepting Tributes for The Games.
+      usage: Syntax error! Use /games-accept
+      permission: HungerGames.starter
+      permissions-message: You don't have Starter permissions
    games-prepare:
       description: Prepare the players to start The Game.
       usage: Syntax error! Use /games-prepare
       aliases: [games-prep]
-      permission: HungerGames.admin
-      permissions-message: You don't have OP permissions
+      permission: HungerGames.starter
+      permissions-message: You don't have Starter permissions
+   games-start:
+      description: Start The Games.
+      usage: Syntax error! Use /games-start
+      permission: HungerGames.starter
+      permissions-message: You don't have Starter permissions
    games-gamemaker:
       description: Become a Gamemaker of the Hunger Game.
       usage: Syntax error! Use /games-gamemaker [name]
       aliases: [games-gm]
-      permission: HungerGames.admin
+      permission: HungerGames.gamemaker
       permissions-message: You don't have OP permissions
    games-ungamemaker:
       description: Removes the Gamemaker permissions.
       usage: Syntax error! Use /games-ungamemaker [name]
       aliases: [games-ungm]
-      permission: HungerGames.admin
-      permissions-message: You don't have OP permissions
-   games-accept:
-      description: Start accepting Tributes for The Games.
-      usage: Syntax error! Use /games-accept
-      permission: HungerGames.admin
+      permission: HungerGames.gamemaker
       permissions-message: You don't have OP permissions
    games-end:
       description: Gamemakers can end The Games early.
       usage: Syntax error! Use /games-end
-      permission: HungerGames.admin
+      permission: HungerGames.gamemaker
       permissions-message: You don't have OP permissions
    games-tpSpawn:
       description: Teleports a player to the spawn.
       usage: Syntax error! Use /games-tpspawn [name]
-      permission: HungerGames.admin
+      permission: HungerGames.gamemaker
       permissions-message: You don't have OP permissions
    games-listTrib:
       description: Lists all tributes.
@@ -110,33 +110,28 @@ commands:
    games-storm:
        description: Toggle storm on/off
        usage: Syntax error! Use /games-storm
-       permissions: HungerGames.admin
+       permissions: HungerGames.gamemaker
        permissions-message: You don't have OP permissions
    games-save:
        description: Saves the current arena
        usage: Syntax error! Use /games-save
-       permissions: HungerGames.admin
+       permissions: HungerGames.gamemaker
        permissions-message: You don't have OP permissions
       
 permissions:
     HungerGames.default:
         description: Permissions to basic Hunger Games commands
         default: true
-    HungerGames.admin:
+    HungerGames.gamemaker:
         description: Permissions to all Hunger Games commands
         default: op
         children:
            HungerGames.default: true
-           HungerGames.gamemaker: true
     HungerGames.outcast:
         description: Keeps from joining the games
-        default: false
         children:
            HungerGames.default: false
-           HungerGames.gamemaker: false
-    HungerGames.gamemaker:
-        description: Gamemaker permissions
-        default: false
+    HungerGames.starter:
+        description: Permissions to use accept, prepare, and start a game
         children:
            HungerGames.default: true
-           HugnerGames.admin: true

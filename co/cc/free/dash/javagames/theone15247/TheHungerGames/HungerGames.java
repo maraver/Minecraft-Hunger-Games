@@ -41,9 +41,9 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -691,7 +691,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			}
 			
 			player.setGameMode(GameMode.SURVIVAL);
-			player.setDisplayName(ChatColor.BLUE + "[Trib]" + ChatColor.WHITE + player.getName());
+			player.setDisplayName(ChatColor.AQUA + "[Tribute]" + ChatColor.WHITE + player.getName());
 			invSaver.addInventory(player);
 			player.getInventory().clear();
 			player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
@@ -724,7 +724,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			p.setAllowFlight(true);
 			p.setFlying(true);
 			this.getServer().broadcastMessage(ChatColor.BLUE + p.getName() + ChatColor.WHITE + " has become a spectator.");
-			p.setDisplayName(ChatColor.BLUE + "[Spec]" + ChatColor.WHITE + p.getName());
+			p.setDisplayName(ChatColor.LIGHT_PURPLE + "[Spectator]" + ChatColor.WHITE + p.getName());
 			p.setVelocity(new Vector(0,0,0));
 			tpTo(p, arenaSpectateLoc);
 			saveBinFile();
@@ -791,7 +791,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 			this.getServer().broadcastMessage(
 					ChatColor.BLUE + p.getName() + 
 					ChatColor.WHITE + " has become a Gamemaker");
-			p.setDisplayName(ChatColor.BLUE + "[GM]" + ChatColor.WHITE + p.getName());
+			p.setDisplayName(ChatColor.GOLD + "[GameMaker]" + ChatColor.WHITE + p.getName());
 			
 			return true;
 		}
@@ -1885,7 +1885,7 @@ public class HungerGames extends JavaPlugin implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerChat(PlayerChatEvent e) {
+	public void onPlayerChat(AsyncPlayerChatEvent e) {
 		Set<Player> recip = e.getRecipients();
 		Player sender = e.getPlayer();
 		

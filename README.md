@@ -1,4 +1,4 @@
-<h2>The Hunger Games Plugin v 1.3.6 for bukkit servers</h2>
+<h2>The Hunger Games Plugin v 1.4 for bukkit servers</h2>
 
 <h3>IMPORTANT</h3>
 
@@ -30,13 +30,15 @@ and created the arena it is important that the do NOT change
 --------------------------------------------------------------------------------------------------------------
 <h3>UPDATING</h3>
 
-<h4>------- special notes --------</h4>
+<h4>------- Special Notes --------</h4>
     
+ * <b>See the new updating key for which update method to use</b>
+	
 <h5>To 1.3.X</h5>
  * You must have 1.3 before you can update to 1.3.X
  *  Ignore the warning that look like this:  Invalid type for tribute's HashMap in bin
 
-<h4>------ general updating -------</h4>
+<h4>------ General Updating -------</h4>
       
  * You must always follow this first step when updating *
  1. Untribute/spectate/GM everyone and stop the games
@@ -64,7 +66,17 @@ and created the arena it is important that the do NOT change
 --------------------------------------------------------------------------------------------------------------
 <h3>CHANGELOG</h3>
 
-<h4>v 1.3.6</h4>
+<h4>------- Updating Key -------</h4>
+<p>
+_<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" method<br/>
+=<i>version</i>=&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Major" method
+</p><br/>
+  
+<h4>_v 1.4_</h4>
+ * Updated to support Minecraft 1.3.2
+ * Added new permissions node "starter" who can use 'games-accept', 'games-prepare', and 'games-start'
+
+<h4>_v 1.3.6_</h4>
  * Set gmCreative in config.yml to false to stop gamemakers from getting creative mode
  * Set fullArena in config.yml to have the item blocks spread around the entire arena
  * Give someone HungerGames.outcast permissions to stop them from joining a game
@@ -74,10 +86,10 @@ and created the arena it is important that the do NOT change
  * Fixed bug with autorun not picking enough players
  * Small improvements
 
-<h4>v 1.3.5b</h4>
+<h4>_v 1.3.5b_</h4>
  * Fixed custom winnings
 
-<h4>v 1.3.5</h4>
+<h4>_v 1.3.5_</h4>
  * Games-save command to save the arena
  * Custom winnings
  * Option to disable mining
@@ -85,10 +97,10 @@ and created the arena it is important that the do NOT change
  * bug fixes with HungerGames.gamemaker permissions
  * bug fixes to autorun
 
-<h4>v 1.3.4</h4>
+<h4>_v 1.3.4_</h4>
  * Bug fixes
 
-<h4>v 1.3.3</h4>
+<h4>_v 1.3.3_</h4>
  * Inventory saving
  * Revamped arena restore
  * Fixed day at start
@@ -99,14 +111,14 @@ and created the arena it is important that the do NOT change
            access to all HG commands without being OP
  * Small bug fixes
 
-<h4>v 1.3.2</h4>
+<h4>_v 1.3.2_</h4>
  * Multiverse support
  * If autorun is on items respawn at a customizable interval
  * Small improvements to arena restore (again...)
  * Fixed autorun
  * Bug fixes
 
-<h4>v 1.3.1</h4>
+<h4>_v 1.3.1_</h4>
  * Custom random items
  * Improved arena restore (again)
  * Fixed multiple tributes in one room (maybe, again)
@@ -121,7 +133,7 @@ and created the arena it is important that the do NOT change
  * Fixed not being able to become a GM
  * Bug fixes
 
-<h4>v 1.3 beta</h4>
+<h4>=v 1.3 beta=</h4>
  * Arena automation
  * Fixed arena restore (I think :P)
  * Updated the item system
@@ -151,14 +163,14 @@ and created the arena it is important that the do NOT change
  * bug fixes
  * some other stuff I can't remember
 
-<h4>v 1.2.1</h4>
+<h4>_v 1.2.1_</h4>
  * Remove tribute armour
  * Updated random items
  * New item display system
  * Remove dropped items from previous games
  * Fixed minor teleporting bug
 
-<h4>v 1.2</h4>
+<h4>=v 1.2=</h4>
  * Changed gamemasters to gamemakers
  * Fixed spectators not being able to give items more than once
  * Tributes can only hear other tributes and spectators and only if they are near by

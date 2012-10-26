@@ -68,15 +68,15 @@ and created the arena it is important that the do NOT change
 
 <h4>------- Updating Key -------</h4>
 <p>
-_<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" method<br/>
-=<i>version</i>=&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Major" method
+ -<i>version</i>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" method<br/>
+ =<i>version</i>=&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Major" method
 </p><br/>
   
-<h4>_v 1.4_</h4>
+<h4>-v 1.4-</h4>
  * Updated to support Minecraft 1.3.2
  * Added new permissions node "starter" who can use 'games-accept', 'games-prepare', and 'games-start'
 
-<h4>_v 1.3.6_</h4>
+<h4>-v 1.3.6-</h4>
  * Set gmCreative in config.yml to false to stop gamemakers from getting creative mode
  * Set fullArena in config.yml to have the item blocks spread around the entire arena
  * Give someone HungerGames.outcast permissions to stop them from joining a game
@@ -86,10 +86,10 @@ _<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" met
  * Fixed bug with autorun not picking enough players
  * Small improvements
 
-<h4>_v 1.3.5b_</h4>
+<h4>-v 1.3.5b-</h4>
  * Fixed custom winnings
 
-<h4>_v 1.3.5_</h4>
+<h4>-v 1.3.5-</h4>
  * Games-save command to save the arena
  * Custom winnings
  * Option to disable mining
@@ -97,10 +97,10 @@ _<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" met
  * bug fixes with HungerGames.gamemaker permissions
  * bug fixes to autorun
 
-<h4>_v 1.3.4_</h4>
+<h4>-v 1.3.4-</h4>
  * Bug fixes
 
-<h4>_v 1.3.3_</h4>
+<h4>-v 1.3.3-</h4>
  * Inventory saving
  * Revamped arena restore
  * Fixed day at start
@@ -111,14 +111,14 @@ _<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" met
            access to all HG commands without being OP
  * Small bug fixes
 
-<h4>_v 1.3.2_</h4>
+<h4>-v 1.3.2-</h4>
  * Multiverse support
  * If autorun is on items respawn at a customizable interval
  * Small improvements to arena restore (again...)
  * Fixed autorun
  * Bug fixes
 
-<h4>_v 1.3.1_</h4>
+<h4>-v 1.3.1-</h4>
  * Custom random items
  * Improved arena restore (again)
  * Fixed multiple tributes in one room (maybe, again)
@@ -163,7 +163,7 @@ _<i>version</i>_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" met
  * bug fixes
  * some other stuff I can't remember
 
-<h4>_v 1.2.1_</h4>
+<h4>-v 1.2.1-</h4>
  * Remove tribute armour
  * Updated random items
  * New item display system

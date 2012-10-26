@@ -16,8 +16,7 @@ and created the arena it is important that the do NOT change
  5. Restart the server. You will get a message saying "A starting location hasn't been set!"
  6. Connect to the server and find the point you want to be the start and center of the arena using f3
  7. Open the config.yml in the new 'The Hunger Games' that has been created (notepad may not work, try notepad++)
- 8. In the file change the diameter of the arena, the amount of items randomly placed need the cornucopia, and the centerX and Z to the ones you choose
- 9. Restart the server, it should work. You may get and error just move the centerX and Z accoring to what it says
+ 8. You MUST change the _centerX _and _centerZ _from 0 and set the _worldName _to the appropriate world. See [The Config File](https://github.com/maraver/Minecraft-Hunger-Games/wiki/The-Config-File) for more information. 9. Restart the server, it should work. You may get and error just move the centerX and Z accoring to what it says
 
 <h4>Starting your first Games</h4>
  1. Make yourself and anyone you want to manage the game an OP (op <name>)

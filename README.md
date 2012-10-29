@@ -1,4 +1,4 @@
-<h2>The Hunger Games Plugin v 1.4 for bukkit servers</h2>
+<h2>The Hunger Games Plugin v 1.4.1 for bukkit servers</h2>
 
 <h3>IMPORTANT</h3>
 
@@ -71,6 +71,9 @@ and created the arena it is important that the do NOT change
  -<i>version</i>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Minor" method<br/>
  =<i>version</i>=&nbsp;&nbsp;&nbsp;&nbsp;Update using the "Major" method
 </p><br/>
+  
+<h4>-v 1.4.1-</h4>
+ * Updated to support Minecraft 1.4.2
   
 <h4>-v 1.4-</h4>
  * Updated to support Minecraft 1.3.2

@@ -2,7 +2,7 @@ name: The Hunger Games
 author: John Espenhahn
 website: free-javagames.co.cc
 main: co.cc.free.dash.javagames.theone15247.TheHungerGames.HungerGames
-version: 1.4
+version: 1.4.1
 
 commands:
    games-volunteer:
